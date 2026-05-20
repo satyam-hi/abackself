@@ -1,5 +1,5 @@
 import express from "express";
-import upload from "../middleware/uploadMiddleware.js";
+// import upload from "../middleware/uploadMiddleware.js";
 import {
   createProduct,
   getProducts,
@@ -30,7 +30,7 @@ router.get("/:id", getSingleProduct);
 // CREATE
 router.post(
   "/create",
-  upload.single("image"),
+  // upload.single("image"),
   createProduct
 );
 
@@ -38,7 +38,7 @@ router.post(
 // UPDATE
 router.put(
   "/:id",
-  upload.single("image"),
+  // upload.single("image"),
   updateProduct
 );
 
