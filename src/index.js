@@ -38,7 +38,7 @@ app.use(
 app.use("/test", (req, res) => {
     res.json({ sms: "This app is runnunig" })
 })
-app.use("/uploads", express.static(path.join("uploads")));
+// app.use("/uploads", express.static(path.join("uploads")));
 app.use('/api', RouterMain);
 
 
