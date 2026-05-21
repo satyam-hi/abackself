@@ -9,44 +9,47 @@ import {
   getAllProviderProducts,
 } from "../controllers/productController.js";
 
-const router = express.Router();
+const productRouter = express.Router();
 
 
 // PROVIDER PRODUCTS
-router.get(
+productRouter.get(
   "/provider-products",
   getAllProviderProducts
 );
 
 
 // ALL PRODUCTS
-router.get("/", getProducts);
+productRouter.get("/", getProducts);
 
 
 // SINGLE PRODUCT
-router.get("/:id", getSingleProduct);
+productRouter.get("/:id", getSingleProduct);
 
 
 // CREATE
-router.post(
+productRouter.post(
   "/create",
-  // upload.single("image"),
   createProduct
 );
+// router.post(
+//   "/create",
+//   // upload.single("image"),
+//   createProduct
+// );
 
 
 // UPDATE
-router.put(
+productRouter.put(
   "/:id",
-  // upload.single("image"),
   updateProduct
 );
 
 
 // DELETE
-router.delete("/:id", deleteProduct);
+productRouter.delete("/:id", deleteProduct);
 
-export default router;
+export default productRouter;
 
 // =======================================
 

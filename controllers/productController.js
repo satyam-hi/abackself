@@ -16,10 +16,11 @@ export const createProduct = async (req, res) => {
       imagelink
     } = req.body;
 
-    // IMAGE
-    const image = req.file
-      ? `/uploads/${req.file.filename}`
-      : "";
+    // // IMAGE
+    // const image = req.file
+    //   ? `/uploads/${req.file.filename}`
+    //   : "";
+     const image = "";
 
     // VALIDATION
     if (
