@@ -174,9 +174,9 @@ export const updateProduct = async (req, res) => {
   try {
 
     // NEW IMAGE
-    if (req.file) {
-      req.body.image = `/uploads/${req.file.filename}`;
-    }
+    // if (req.file) {
+    //   req.body.image = `/uploads/${req.file.filename}`;
+    // }
 
     const product = await Product.findByIdAndUpdate(
       req.params.id,
