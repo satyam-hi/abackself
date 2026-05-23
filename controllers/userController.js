@@ -390,3 +390,81 @@ export const verifyUserToken = async (req, res) => {
         });
     }
 };
+
+
+
+// ================= UPDATE PROVIDER ID =================
+
+export const updateProviderId = async (req, res) => {
+    try {
+        const { suid, sprovid } = req.body;
+
+        if (!suid || !sprovid) {
+            return res.status(400).json({
+                success: false,
+                message: "suid and sprovid are required",
+            });
+        }
+
+        const user = await Suser.findOne({ suid });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        // Update provider id
+        user.sprovid = sprovid;
+
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Provider ID updated successfully",
+            user,
+        });
+
+    } catch (error) {
+        console.error("Update provider id error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+};
+
+// ================= GET USERS BY PROVIDER ID =================
+
+export const getUsersByProviderId = async (req, res) => {
+    try {
+
+        const { sprovid } = req.params;
+
+        if (!sprovid) {
+            return res.status(400).json({
+                success: false,
+                message: "Provider ID required",
+            });
+        }
+
+        const users = await Suser.find({ sprovid });
+
+        return res.status(200).json({
+            success: true,
+            users,
+        });
+
+    } catch (error) {
+
+        console.log(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Server Error",
+        });
+    }
+};

@@ -25,6 +25,7 @@ import bcrypt from "bcrypt";
 
 const SuserSchema = new mongoose.Schema({
     suid: String,
+    sprovid: String,
     name: String,
     email: String,
     mobile: String,
