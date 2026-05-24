@@ -108,8 +108,7 @@ export const getAllProvider = async (req, res) => {
         const totalProviders = await Sprovider.countDocuments(filter);
 
         // FETCH DATA
-        const providers = await Sprovider.find(filter)
-            .skip(skip)
+        const providers = await Sprovider.find(filter).select("-password -accesstoken -sessionAccesstoken -emailVerifyAccesstoken").skip(skip)
             .limit(pageLimit)
             .sort({ createdAt: -1 });
 
@@ -436,7 +435,7 @@ export const getProviderById = async (req, res) => {
             });
         }
 
-        const provider = await Sprovider.findOne({ sprovid });
+        const provider = await Sprovider.findOne({ sprovid }).select("-password -accesstoken -sessionAccesstoken -emailVerifyAccesstoken");
 
         if (!provider) {
             return res.status(404).json({
