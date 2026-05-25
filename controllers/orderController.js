@@ -1,4 +1,5 @@
 import Order from "../models/orderModel.js";
+import Settlement from "../models/Settlement.js";
 import crypto from "crypto";
 import razorpay from "../config/razorpay.js";
 
