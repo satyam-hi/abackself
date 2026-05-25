@@ -597,3 +597,766 @@ export const verifyPaymentAndCreateOrder = async (
 
 
 
+
+
+// ======================================================
+// DASHBOARD ANALYTICS
+// ======================================================
+
+export const getDashboardAnalytics = async (req, res) => {
+  try {
+
+    const { sprovid } = req.params;
+
+    // ==========================================
+    // TODAY DATE
+    // ==========================================
+
+    const today = new Date();
+
+    const startOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    const startOfWeek = new Date();
+    startOfWeek.setDate(today.getDate() - 7);
+
+    const startOfMonth = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      1
+    );
+
+    // ==========================================
+    // TOTAL ANALYTICS
+    // ==========================================
+
+    const totalOrders = await Order.countDocuments({
+      sprovid,
+    });
+
+    const totalSalesResult =
+      await Order.aggregate([
+        {
+          $match: { sprovid },
+        },
+        {
+          $group: {
+            _id: null,
+            total: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+      ]);
+
+    const totalSales =
+      totalSalesResult[0]?.total || 0;
+
+    // ==========================================
+    // TODAY REPORT
+    // ==========================================
+
+    const todayOrders =
+      await Order.countDocuments({
+        sprovid,
+        createdAt: {
+          $gte: startOfToday,
+        },
+      });
+
+    const todaySalesResult =
+      await Order.aggregate([
+        {
+          $match: {
+            sprovid,
+            createdAt: {
+              $gte: startOfToday,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+      ]);
+
+    const todaySales =
+      todaySalesResult[0]?.total || 0;
+
+    // ==========================================
+    // WEEKLY REPORT
+    // ==========================================
+
+    const weeklyReport =
+      await Order.aggregate([
+        {
+          $match: {
+            sprovid,
+            createdAt: {
+              $gte: startOfWeek,
+            },
+          },
+        },
+
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$createdAt",
+              },
+            },
+
+            totalOrders: {
+              $sum: 1,
+            },
+
+            totalAmount: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+
+        {
+          $sort: {
+            _id: 1,
+          },
+        },
+      ]);
+
+    // ==========================================
+    // MONTHLY REPORT
+    // ==========================================
+
+    const monthlyReport =
+      await Order.aggregate([
+        {
+          $match: {
+            sprovid,
+            createdAt: {
+              $gte: startOfMonth,
+            },
+          },
+        },
+
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$createdAt",
+              },
+            },
+
+            totalOrders: {
+              $sum: 1,
+            },
+
+            totalAmount: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+
+        {
+          $sort: {
+            _id: 1,
+          },
+        },
+      ]);
+
+    // ==========================================
+    // SETTLEMENT REPORT
+    // ==========================================
+
+    const settlementReport =
+      await Order.aggregate([
+        {
+          $match: {
+            sprovid,
+          },
+        },
+
+        {
+          $group: {
+            _id: "$settleStatus",
+
+            totalOrders: {
+              $sum: 1,
+            },
+
+            totalAmount: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+      ]);
+
+    // ==========================================
+    // PAYMENT REPORT
+    // ==========================================
+
+    const paymentReport =
+      await Order.aggregate([
+        {
+          $match: {
+            sprovid,
+          },
+        },
+
+        {
+          $group: {
+            _id: "$paymentStatus",
+
+            totalOrders: {
+              $sum: 1,
+            },
+
+            totalAmount: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+      ]);
+
+    // ==========================================
+    // ORDER STATUS REPORT
+    // ==========================================
+
+    const orderStatusReport =
+      await Order.aggregate([
+        {
+          $match: {
+            sprovid,
+          },
+        },
+
+        {
+          $group: {
+            _id: "$orderStatus",
+
+            totalOrders: {
+              $sum: 1,
+            },
+          },
+        },
+      ]);
+
+    // ==========================================
+    // RESPONSE
+    // ==========================================
+
+    return res.status(200).json({
+      success: true,
+
+      dashboard: {
+        totalOrders,
+        totalSales,
+        todayOrders,
+        todaySales,
+      },
+
+      weeklyReport,
+
+      monthlyReport,
+
+      settlementReport,
+
+      paymentReport,
+
+      orderStatusReport,
+    });
+
+  } catch (error) {
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
+
+
+// ======================================================
+// DASHBOARD ANALYTICS2222222222222222222222222
+// ======================================================
+
+export const getDashboardAnalytics222 = async (req, res) => {
+  try {
+
+    const { sprovid } = req.params;
+
+    // ==========================================
+    // TODAY DATE
+    // ==========================================
+
+    const today = new Date();
+
+    const startOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+
+    const startOfWeek = new Date();
+    startOfWeek.setDate(today.getDate() - 7);
+
+    const startOfMonth = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      1
+    );
+
+    // ==========================================
+    // TOTAL ANALYTICS
+    // ==========================================
+
+    const totalOrders = await Order.countDocuments({
+      sprovid,
+    });
+
+    const totalSalesResult =
+      await Order.aggregate([
+        {
+          $match: { sprovid },
+        },
+        {
+          $group: {
+            _id: null,
+            total: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+      ]);
+
+    const totalSales =
+      totalSalesResult[0]?.total || 0;
+
+    // ==========================================
+    // TODAY REPORT
+    // ==========================================
+
+    const todayOrders =
+      await Order.countDocuments({
+        sprovid,
+        createdAt: {
+          $gte: startOfToday,
+        },
+      });
+
+    const todaySalesResult =
+      await Order.aggregate([
+        {
+          $match: {
+            sprovid,
+            createdAt: {
+              $gte: startOfToday,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+      ]);
+
+    const todaySales =
+      todaySalesResult[0]?.total || 0;
+
+    // ==========================================
+    // SETTLEMENT REPORT
+    // ==========================================
+
+    const settlementReport =
+      await Order.aggregate([
+        {
+          $match: {
+            sprovid,
+          },
+        },
+
+        {
+          $group: {
+            _id: "$settleStatus",
+
+            totalOrders: {
+              $sum: 1,
+            },
+
+            totalAmount: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+      ]);
+
+    // ==========================================
+    // PAYMENT REPORT
+    // ==========================================
+
+    const paymentReport =
+      await Order.aggregate([
+        {
+          $match: {
+            sprovid,
+          },
+        },
+
+        {
+          $group: {
+            _id: "$paymentStatus",
+
+            totalOrders: {
+              $sum: 1,
+            },
+
+            totalAmount: {
+              $sum: "$totalAmount",
+            },
+          },
+        },
+      ]);
+
+    // ==========================================
+    // ORDER STATUS REPORT
+    // ==========================================
+
+    const orderStatusReport =
+      await Order.aggregate([
+        {
+          $match: {
+            sprovid,
+          },
+        },
+
+        {
+          $group: {
+            _id: "$orderStatus",
+
+            totalOrders: {
+              $sum: 1,
+            },
+          },
+        },
+      ]);
+
+    // ==========================================
+    // RESPONSE
+    // ==========================================
+
+    return res.status(200).json({
+      success: true,
+
+      dashboard: {
+        totalOrders,
+        totalSales,
+        todayOrders,
+        todaySales,
+      },
+
+      // weeklyReport,
+
+      // monthlyReport,
+
+      settlementReport,
+
+      paymentReport,
+
+      orderStatusReport,
+    });
+
+  } catch (error) {
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+
+
+// ==================================
+// Singel day Setell 
+// =====================================
+
+export const getSingleDayAnalytics = async (req, res) => {
+  try {
+    const { sprovid, date } = req.params;
+
+    // date format: YYYY-MM-DD
+    const startDate = new Date(date);
+    const endDate = new Date(date);
+    endDate.setDate(endDate.getDate() + 1);
+
+    // ==========================================
+    // MATCH BASE
+    // ==========================================
+
+    const matchStage = {
+      sprovid,
+      createdAt: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    };
+
+    // // ==========================================
+    // // TOTAL ORDERS + SALES
+    // // ==========================================
+
+    // const totalResult = await Order.aggregate([
+    //   { $match: matchStage },
+    //   {
+    //     $group: {
+    //       _id: null,
+    //       totalOrders: { $sum: 1 },
+    //       totalAmount: { $sum: "$totalAmount" },
+    //     },
+    //   },
+    // ]);
+
+    // const totalOrders = totalResult[0]?.totalOrders || 0;
+    // const totalAmount = totalResult[0]?.totalAmount || 0;
+
+    // // ==========================================
+    // // SETTLEMENT STATUS REPORT
+    // // ==========================================
+
+    // const settlementReport = await Order.aggregate([
+    //   { $match: matchStage },
+    //   {
+    //     $group: {
+    //       _id: "$settleStatus",
+
+    //       totalOrders: { $sum: 1 },
+    //       totalAmount: { $sum: "$totalAmount" },
+    //     },
+    //   },
+    // ]);
+
+    // // ==========================================
+    // // PAYMENT METHOD REPORT
+    // // ==========================================
+
+    // const paymentReport = await Order.aggregate([
+    //   { $match: matchStage },
+    //   {
+    //     $group: {
+    //       _id: "$paymentMethod",
+
+    //       totalOrders: { $sum: 1 },
+    //       totalAmount: { $sum: "$totalAmount" },
+    //     },
+    //   },
+    // ]);
+
+
+
+    const result = await Order.aggregate([
+  { $match: matchStage },
+
+  {
+    $facet: {
+      summary: [
+        {
+          $group: {
+            _id: null,
+            totalOrders: { $sum: 1 },
+            totalAmount: { $sum: "$totalAmount" },
+          },
+        },
+      ],
+
+       paymentStuatusReport: [
+        {
+          $group: {
+            _id: "$paymentStatus",
+            totalOrders: { $sum: 1 },
+            totalAmount: { $sum: "$totalAmount" },
+          },
+        },
+      ],
+
+      settlementReport: [
+        {
+          $group: {
+            _id: "$settleStatus",
+            totalOrders: { $sum: 1 },
+            totalAmount: { $sum: "$totalAmount" },
+          },
+        },
+      ],
+
+      paymentReport: [
+        {
+          $group: {
+            _id: "$paymentMethod",
+            totalOrders: { $sum: 1 },
+            totalAmount: { $sum: "$totalAmount" },
+          },
+        },
+      ],
+    },
+  },
+]);
+
+    // ==========================================
+    // RESPONSE
+    // ==========================================
+
+    return res.status(200).json({
+      success: true,
+      result
+
+      // date,
+      // summary: {
+      //   totalOrders,
+      //   totalAmount,
+      // },
+
+      // settlementReport,
+      // paymentReport,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+
+
+export const settleProviderPaymentsByDate = async (req, res) => {
+  try {
+    const { sprovid, date } = req.params;
+
+    // YYYY-MM-DD
+    const startDate = new Date(date);
+
+    const endDate = new Date(date);
+    endDate.setDate(endDate.getDate() + 1);
+
+    // already settled check
+    const alreadySettled = await Settlement.findOne({
+      sprovid,
+      date,
+    });
+
+    if (alreadySettled) {
+      return res.status(400).json({
+        success: false,
+        message: "This date already settled",
+      });
+    }
+
+    // find pending orders
+    const orders = await Order.find({
+      sprovid,
+      settleStatus: "pending",
+
+      createdAt: {
+        $gte: startDate,
+        $lt: endDate,
+      },
+    });
+
+    if (!orders.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No pending orders found",
+      });
+    }
+
+    const totalAmount = orders.reduce(
+      (sum, item) => sum + item.totalAmount,
+      0
+    );
+
+    // update orders
+    const result = await Order.updateMany(
+      {
+        sprovid,
+        settleStatus: "pending",
+
+        createdAt: {
+          $gte: startDate,
+          $lt: endDate,
+        },
+      },
+      {
+        $set: {
+          settleStatus: "completed",
+          settleDate: new Date(),
+        },
+      }
+    );
+
+    // create settlement history
+    await Settlement.create({
+      sprovid,
+      date,
+
+      totalOrders: result.modifiedCount,
+      totalAmount,
+
+      settledBy: req.user?._id,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Settlement completed",
+
+      data: {
+        date,
+        totalOrders: result.modifiedCount,
+        totalAmount,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+
+
+export const getSettlementHistory = async (req, res) => {
+  try {
+    const { sprovid } = req.params;
+
+    const settlements = await Settlement.find({
+      sprovid,
+    }).sort({ date: -1 });
+
+    return res.status(200).json({
+      success: true,
+      settlements,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

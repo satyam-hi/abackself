@@ -3,7 +3,8 @@ import express from "express";
 import {
   createOrder,
   getOrders,
-  updateOrderStatus, getCustomerOrders, getSingleOrder,getProviderOrders,updatePaymentStatus,updateOrderItems,getQueueOrders
+  updateOrderStatus, getCustomerOrders, getSingleOrder,getProviderOrders,updatePaymentStatus,updateOrderItems,getQueueOrders, getDashboardAnalytics, getDashboardAnalytics222, getSingleDayAnalytics, settleProviderPaymentsByDate
+,getSettlementHistory
 } from "../controllers/orderController.js";
 import {
   createRazorpayOrder,
@@ -53,6 +54,28 @@ orderRouter.put(
 orderRouter.get(
   "/queue/:sprovid",
   getQueueOrders
+);
+
+orderRouter.get(
+  "/dashboard/:sprovid",
+  getDashboardAnalytics
+);
+
+orderRouter.get(
+  "/dashboard222/:sprovid",
+  getDashboardAnalytics222
+);
+orderRouter.get(
+  "/day-report/:sprovid/:date",
+  getSingleDayAnalytics
+);
+orderRouter.get(
+  "/settlement/history/:sprovid",
+  getSettlementHistory
+);
+orderRouter.post(
+  "/settlement/:sprovid/:date",
+  settleProviderPaymentsByDate
 );
 orderRouter.put("/update-items/:id", updateOrderItems);
 orderRouter.put("/:id", updateOrderStatus);
