@@ -167,7 +167,7 @@ export const registerProvider = async (req, res) => {
         const sessionAccesstoken = "";
         const status = "active";
         const additionalDetails = { dd: "test",
-                                    paymentType: {value: "both",}
+                                    paymentType: {value: "offline",}
                                     };
         const emailVerifyAccesstoken = `${Math.floor(
             100000 + Math.random() * 900000
