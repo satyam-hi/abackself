@@ -304,6 +304,7 @@ export const getProviderOrders = async (req, res) => {
       query.$or = [
         { customerMobile: { $regex: search, $options: "i" } },
         { tokenNumber: Number(search) || -1 },
+        { tableNumber: Number(search) || -1 },
       ];
     }
 
